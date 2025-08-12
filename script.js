@@ -211,41 +211,105 @@ function addLinkedInImport() {
   }
 }
 
-async function importFromLinkedIn() {
-  try {
-    const importBtn = document.getElementById('import-linkedin');
-    const originalText = importBtn.innerHTML;
-    importBtn.disabled = true;
-    importBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+function importFromLinkedIn() {
+  // In a real app, this would use the LinkedIn API
+  alert('In a complete application, this would connect to LinkedIn to import your profile data.');
+  
+  // For demo purposes, we'll simulate importing data
+  const mockLinkedInData = {
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    phone: '(123) 456-7890',
+    linkedin: 'linkedin.com/in/johndoe',
+    experiences: [
+      {
+        jobTitle: 'Senior Software Engineer',
+        company: 'TechCorp',
+        startDate: '2018-06',
+        endDate: '',
+        description: 'Led a team of 5 developers to build scalable web applications. Implemented CI/CD pipelines reducing deployment times by 40%.'
+      },
+      {
+        jobTitle: 'Software Developer',
+        company: 'Innovate Inc',
+        startDate: '2015-01',
+        endDate: '2018-05',
+        description: 'Developed and maintained company website and internal tools. Collaborated with design team to implement UI improvements.'
+      }
+    ],
+    education: [
+      {
+        degree: 'Bachelor of Science in Computer Science',
+        institution: 'State University',
+        startYear: '2011',
+        endYear: '2015'
+      }
+    ],
+    skills: ['JavaScript', 'React', 'Node.js', 'Python', 'SQL', 'Project Management'],
+    certifications: [
+      {
+        name: 'AWS Certified Developer',
+        organization: 'Amazon Web Services',
+        year: '2020'
+      }
+    ]
+  };
+  
+  // Fill the form with imported data
+  fillFormWithData(mockLinkedInData);
+}
+
+function fillFormWithData(data) {
+  // Fill personal info
+  document.getElementById('full-name').value = data.name || '';
+  document.getElementById('email').value = data.email || '';
+  document.getElementById('phone').value = data.phone || '';
+  document.getElementById('linkedin').value = data.linkedin || '';
+  
+  // Fill experiences
+  data.experiences.forEach((exp, index) => {
+    if (index > 0) addExperienceField();
     
-    // In a real implementation, you would use the LinkedIn API
-    // For security reasons, this must be done through a backend service
+    const container = document.getElementById('experience-container');
+    const entry = container.children[index];
     
-    // For demo purposes, we'll simulate the OAuth flow
-    const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=YOUR_CLIENT_ID&redirect_uri=${encodeURIComponent(window.location.origin)}&scope=r_liteprofile%20r_emailaddress%20w_member_social`;
+    entry.querySelector(`#job-title-${index+1}`).value = exp.jobTitle || '';
+    entry.querySelector(`#company-${index+1}`).value = exp.company || '';
+    entry.querySelector(`#start-date-${index+1}`).value = exp.startDate || '';
+    entry.querySelector(`#end-date-${index+1}`).value = exp.endDate || '';
+    entry.querySelector(`#job-description-${index+1}`).value = exp.description || '';
+  });
+  
+  // Fill education
+  data.education.forEach((edu, index) => {
+    if (index > 0) addEducationField();
     
-    // Show a popup explaining the LinkedIn integration
-    const proceed = confirm('This will redirect you to LinkedIn to authorize access to your profile. Continue?');
+    const container = document.getElementById('education-container');
+    const entry = container.children[index];
     
-    if (proceed) {
-      // In a real app, you would redirect to the auth URL
-      // window.location.href = linkedInAuthUrl;
-      
-      // For demo, we'll use mock data
-      const mockLinkedInData = await fetchMockLinkedInData();
-      fillFormWithData(mockLinkedInData);
-      showToast('LinkedIn profile imported successfully!', 'success');
-    }
-  } catch (error) {
-    console.error('Error importing from LinkedIn:', error);
-    showToast('Failed to import LinkedIn profile.', 'error');
-  } finally {
-    const importBtn = document.getElementById('import-linkedin');
-    if (importBtn) {
-      importBtn.disabled = false;
-      importBtn.innerHTML = '<i class="fab fa-linkedin"></i> Import Profile';
-    }
-  }
+    entry.querySelector(`#degree-${index+1}`).value = edu.degree || '';
+    entry.querySelector(`#institution-${index+1}`).value = edu.institution || '';
+    entry.querySelector(`#education-start-${index+1}`).value = edu.startYear || '';
+    entry.querySelector(`#education-end-${index+1}`).value = edu.endYear || '';
+  });
+  
+  // Fill skills
+  document.getElementById('skills').value = data.skills.join(', ') || '';
+  
+  // Fill certifications
+  data.certifications.forEach((cert, index) => {
+    if (index > 0) addCertificationField();
+    
+    const container = document.getElementById('certifications-container');
+    const entry = container.children[index];
+    
+    entry.querySelector(`#cert-name-${index+1}`).value = cert.name || '';
+    entry.querySelector(`#cert-org-${index+1}`).value = cert.organization || '';
+    entry.querySelector(`#cert-year-${index+1}`).value = cert.year || '';
+  });
+  
+  // Show success message
+  showToast('LinkedIn profile imported successfully!');
 }
 
 async function fetchMockLinkedInData() {
@@ -1081,3 +1145,4 @@ function generateCoverLetter() {
   // In a real app, this would open a cover letter generator
   alert('In a complete application, this would generate a personalized cover letter based on your resume.');
 }
+
